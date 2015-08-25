@@ -6,6 +6,7 @@ __author__ = 'herbertqiao'
 from singleton import Singleton
 import time
 import json
+import threading
 from config import Config
 
 
@@ -48,6 +49,8 @@ class Password():
         self.user_id = 0
         self.mark = ""
         self.version = 0
+        self.length = 16
+        self.check_code = ""
         self.url = ""
         self.intro = ""
         self.type = 0
@@ -66,10 +69,12 @@ class Storage(Singleton):
         self.version = 1
         self.database = {
             "version": 1,
-            "passwords": [],
+            "passwords": {},
+            "passwords_num": 0
         }
         self.config = Config()
         self.storage_path = "~/.ImoutoPassword/database.json"
+        self.lock = threading.RLock()
 
     def load(self):
         try:

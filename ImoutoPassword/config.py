@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 __author__ = 'herbertqiao'
 
 import ConfigParser
@@ -9,18 +12,23 @@ from singleton import Singleton
 
 
 class Config(Singleton):
-    def __init__(self, args):
+    def __init__(self, args=None):
         if hasattr(self, '_init'):
             return
         self._init = True
         self.args = args
         self.config = ConfigParser.ConfigParser(
         )
-        self.config_path = args.config
+        if args:
+            self.config_path = args.config
+        else:
+            self.config_path = "~/.ImoutoPassword/config"
         self.config_default_file = """
         [option]
         #Whether to check the main password right or not.
         check_password = true
+        #Salt.
+        salt = ha92
 
         [daemon]
         #Whether to enable daemon mode.

@@ -2,13 +2,14 @@ __author__ = 'herbertqiao'
 
 from client import Client
 import argparse
+from daemon import basic_daemon
 
 
 def start():
     parser = argparse.ArgumentParser(
     )
     subparsers = parser.add_subparsers(dest='operate')
-    add_parser = subparsers.add_parser('add',
+    add_parser = subparsers.add_parser('add', alias=['a'],
                                        help='Generate a password')
     add_parser.add_argument('mark',
                             help="The mark of the password")
@@ -18,11 +19,13 @@ def start():
                             help="The intro of the password")
     add_parser.add_argument('-r', '--release',
                             help="The version of the password")
-    del_parser = subparsers.add_parser('del',
+    del_parser = subparsers.add_parser('del', alias=['d'],
                                        help='Delete a password')
-    ls_parser = subparsers.add_parser('ls',
+    ls_parser = subparsers.add_parser('ls', alias=['l'],
                                       help='List a password')
-    daemon_parser = subparsers.add_parser('daemon',
+    get_parser = subparsers.add_parser('get', alias=['g'],
+                                      help='List a password')
+    daemon_parser = subparsers.add_parser('daemon', alias=['d'],
                                           help='Start the daemon')
     parser.add_argument('-c', '--config',
                         default='~/.ImoutoPassword/config',
