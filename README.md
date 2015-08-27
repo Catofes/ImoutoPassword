@@ -18,10 +18,11 @@ ipw -h
 
 A LOT
 
-*IFrame version(chrome extension)
-*Sync
-*Interaction Mode
-*Daemon Mode
-*GUI
-*Android
+- IFrame version(chrome extension)
+- Sync
+- Interaction Mode
+- User-define Type
+- Daemon Mode
+- GUI
+- Android
 
