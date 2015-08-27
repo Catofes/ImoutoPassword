@@ -3,11 +3,12 @@
 
 __author__ = 'herbertqiao'
 
-from singleton import Singleton
+from ImoutoPassword.singleton import Singleton
 import time
 import json
 import threading
-from config import Config
+from ImoutoPassword.config import Config
+import os
 
 
 def obj2dict(obj):
@@ -20,9 +21,12 @@ def dict2obj(d):
     if "__class__" in d:
         class_name = d.pop('__class__')
         module_name = d.pop('__module__')
+        modules = module_name.split('.')
         module = __import__(module_name)
+        for i in range(1, len(modules)):
+            module = getattr(module, modules[i])
         class_ = getattr(module, class_name)
-        args = dict((key, value) for key, value in d.item())
+        args = dict((key, value) for key, value in d.items())
         inst = class_(**args)
     else:
         inst = d
@@ -31,34 +35,36 @@ def dict2obj(d):
 
 def to_json(obj):
     if isinstance(obj, Password):
-        return {'__class__': 'Password',
-                '__value__': obj2dict(obj)}
+        return {'__jclass__': 'Password',
+                '__jvalue__': obj2dict(obj)}
     raise TypeError(repr(obj) + ' is not JSON serializable')
 
 
 def from_json(obj):
-    if '__class__' in obj:
-        if obj['__class__'] == "Password":
-            return dict2obj(obj['__value__'])
+    if '__jclass__' in obj:
+        if obj['__jclass__'] == "Password":
+            return dict2obj(obj['__jvalue__'])
     return obj
 
 
 class Password():
-    def __init__(self):
-        self.id = 0
-        self.user_id = 0
-        self.mark = ""
-        self.version = 0
-        self.length = 16
-        self.check_code = ""
-        self.url = ""
-        self.intro = ""
-        self.type = 0
+    def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", type=0, update_time=0,
+                 need_update=False, available=True, special=False, sync_code=""):
+        self.id = id
+        self.user_id = user_id
+        self.mark = mark
+        self.version = version
+        self.length = length
+        self.url = url
+        self.intro = intro
+        self.type = type
         self.update_time = time.time()
-        self.need_update = False
-        self.available = True
-        self.visual = True
-        self.sync_code = ""
+        if update_time != 0:
+            self.update_time = update_time
+        self.need_update = need_update
+        self.available = available
+        self.special = special
+        self.sync_code = sync_code
 
 
 class Storage(Singleton):
@@ -73,13 +79,13 @@ class Storage(Singleton):
             "passwords_num": 0
         }
         self.config = Config()
-        self.storage_path = "~/.ImoutoPassword/database.json"
+        self.storage_path = os.path.join(os.path.expanduser('~'), '.ImoutoPassword/database.json')
         self.lock = threading.RLock()
 
     def load(self):
         try:
-            f = file(self.storage_path, 'r')
-            self.database = json.loads(self.file.read(), object_hook=from_json)
+            f = open(self.storage_path, 'r')
+            self.database = json.loads(f.read(), object_hook=from_json)
             f.close()
         except:
             self.__init__()
@@ -87,7 +93,7 @@ class Storage(Singleton):
             self.save()
 
     def save(self):
-        f = file(self.storage_path, 'w')
+        f = open(self.storage_path, 'w')
         f.write(json.dumps(self.database, default=to_json))
         f.close()
 

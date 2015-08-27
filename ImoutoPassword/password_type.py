@@ -1,7 +1,7 @@
 __author__ = 'herbertqiao'
 
-from singleton import Singleton
-from errors import PasswordError
+from ImoutoPassword.singleton import Singleton
+from ImoutoPassword.errors import PasswordError
 
 
 class PasswordType(Singleton):
@@ -76,7 +76,7 @@ class PasswordType(Singleton):
                                 "Password type error. Check your password record or check your password_type file.",
                                 None)
         change_map = self.change_map[password_type]
-        for k, v in change_map['mapping']:
+        for k, v in change_map['mapping'].items():
             result = result.replace(k, v)
         result = change_map["start_with"] + result + change_map['completion']
         result = result[0:length]

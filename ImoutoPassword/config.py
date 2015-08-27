@@ -3,12 +3,12 @@
 
 __author__ = 'herbertqiao'
 
-import ConfigParser
+import configparser
 import string
 import os
 import io
 import sys
-from singleton import Singleton
+from ImoutoPassword.singleton import Singleton
 
 
 class Config(Singleton):
@@ -17,53 +17,58 @@ class Config(Singleton):
             return
         self._init = True
         self.args = args
-        self.config = ConfigParser.ConfigParser(
+        self.config = configparser.ConfigParser(
         )
-        if args:
-            self.config_path = args.config
-        else:
-            self.config_path = "~/.ImoutoPassword/config"
+
+        self.config_path = os.path.join(os.path.expanduser('~'), '.ImoutoPassword')
+        self.config_file = os.path.join(os.path.expanduser('~'), '.ImoutoPassword/config')
         self.config_default_file = """
-        [option]
-        #Whether to check the main password right or not.
-        check_password = true
-        #Salt.
-        salt = ha92
+[option]
+#Whether to check the main password right or not.
+check_password = true
+#Salt.
+salt = ha92
+#Check remember password is right or not.
+rpw_check = 1
+#When add new password, don't ask for remember_password
+add_without_rpw = 0
 
-        [daemon]
-        #Whether to enable daemon mode.
-        daemon = 1
-        #Main password stored time in second.
-        expired = 300
-        #listen port
-        port = 8912
+[daemon]
+#Whether to enable daemon mode.
+daemon = 1
+#Main password stored time in second.
+expired = 300
+#listen port
+port = 8912
 
-        [sync]
-        #sync enable
-        enable = 0
-        #server url
-        server = https://test.com/api
+[sync]
+#sync enable
+enable = 0
+#server url
+server = https://test.com/api
         """
-        self.config_default = ConfigParser.ConfigParser()
-        self.config_default.readfp(io.BytesIO(self.config_default_file))
+        self.config_default = configparser.ConfigParser()
+        self.config_default.read_string(self.config_default_file)
         self.load()
 
     def create_config_file(self):
-        config_file = file(self.config_path, "w")
+        if not os.path.isdir(self.config_path):
+            os.mkdir(self.config_path)
+        config_file = open(self.config_file, "w")
         config_file.write(self.config_default_file)
         config_file.close()
 
     def load(self):
-        if not os.path.isfile(self.config_path):
+        if not os.path.isfile(self.config_file):
             self.create_config_file()
         try:
-            self.config.read(self.config_path)
+            self.config.read(self.config_file)
         except Exception:
             print("Read Config File Error.")
             sys.exit(1)
 
     def save(self):
-        config_file = file(self.config_path, "w")
+        config_file = open(self.config_file, "w")
         config_file.write(self.config)
         config_file.close()
 
