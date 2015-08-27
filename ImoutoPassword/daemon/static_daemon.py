@@ -60,14 +60,14 @@ class StaticDaemon(Singleton):
             self.database['passwords'][str(password_id)].sync_code = "M"
         self.storage.save()
 
-    def get(self, remember_password, passwords_id):
+    def get(self, master_password, passwords_id):
         result = {}
         for pid in passwords_id:
             if str(pid) in self.database['passwords'].keys():
                 password = self.database['passwords'][str(pid)]
                 if password.special or not password.available:
                     continue
-                key = self.calculate_key(remember_password, password)
+                key = self.calculate_key(master_password, password)
                 result[password] = key
 
         def compare(x, y):
@@ -85,7 +85,7 @@ class StaticDaemon(Singleton):
 
         return sorted(result.items(), key=cmp_to_key(compare))
 
-    def modify(self, remember_password, password):
+    def modify(self, master_password, password):
         self.storage.lock.acquire()
         password.sync_code = "M"
         if password.length < 4 or password.length > 32:
@@ -94,32 +94,32 @@ class StaticDaemon(Singleton):
         self.storage.lock.release()
         self.storage.save()
 
-    def calculate_key(self, remember_password, password):
-        result = remember_password + password.mark + str(password.version) + self.salt
+    def calculate_key(self, master_password, password):
+        result = master_password + password.mark + str(password.version) + self.salt
         result = hashlib.sha512(result.encode('utf-8')).hexdigest()
         result = self.password_type.change(result, password.type, password.length)
         return result
 
-    def check_remember_password(self, remember_password):
+    def check_master_password(self, master_password):
         check = None
         for id, password in self.database['passwords'].items():
-            if password.special and password.mark == "RememberPasswordCheck":
+            if password.special and password.mark == "MasterPasswordCheck":
                 check = password
                 break
         if not check:
             return -1
-        if check.intro == self.calculate_key(remember_password, check):
+        if check.intro == self.calculate_key(master_password, check):
             return 1
         else:
             return 0
 
-    def generate_remember_password_check(self, remember_password):
+    def generate_master_password_check(self, master_password):
         self.storage.lock.acquire()
         pid = 0
         password = Password()
-        if self.check_remember_password(remember_password) != -1:
+        if self.check_master_password(master_password) != -1:
             for item in self.database['passwords']:
-                if item.special and item.mark == "RememberPasswordCheck":
+                if item.special and item.mark == "MasterPasswordCheck":
                     pid = item.id
                     password.sync_code = "M"
                     break
@@ -129,8 +129,8 @@ class StaticDaemon(Singleton):
             password.sync_code = "A"
         password.id = pid
         password.special = True
-        password.mark = "RememberPasswordCheck"
-        password.intro = self.calculate_key(remember_password, password)
+        password.mark = "MasterPasswordCheck"
+        password.intro = self.calculate_key(master_password, password)
         self.database['passwords'][str(pid)] = password
         self.storage.save()
         self.storage.lock.release()

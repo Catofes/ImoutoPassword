@@ -106,16 +106,16 @@ class Client:
                     password.type = 4
                 else:
                     password.type = 0
-            if args.no_password or self.config.get("option", "add_without_rpw") == "1":
+            if args.no_password or self.config.get("option", "add_without_mpw") == "1":
                 self.daemon.add(password)
                 return
-            remember_password = getpass.getpass("Please input your remember password:")
-            if self.config.get("option", "rpw_check") == "1":
-                if self.daemon.check_remember_password(remember_password) != 1:
-                    print("Remember Password Error. Please check or set your remember password.")
+            master_password = getpass.getpass("Please input your master password:")
+            if self.config.get("option", "mpw_check") == "1":
+                if self.daemon.check_master_password(master_password) != 1:
+                    print("Master Password Error. Please check or set your master password.")
                     return
             pw_id = self.daemon.add(password)
-            result = self.daemon.get(remember_password, [pw_id])
+            result = self.daemon.get(master_password, [pw_id])
             self.print_password(result)
             return
         if args.operate == "del" or args.operate == "d":
@@ -131,25 +131,25 @@ class Client:
             self.print_password(passwords, keyword, False)
             return
         if args.operate == "get" or args.operate == "g":
-            remember_password = getpass.getpass("Please input your remember password:")
-            if self.config.get("option", "rpw_check") == "1":
-                if self.daemon.check_remember_password(remember_password) != 1:
-                    print("Remember Password Error. Please check or set your remember password.")
+            master_password = getpass.getpass("Please input your master password:")
+            if self.config.get("option", "mpw_check") == "1":
+                if self.daemon.check_master_password(master_password) != 1:
+                    print("Master Password Error. Please check or set your master password.")
                     return
             if not args.mark:
                 keyword = ""
             else:
                 keyword = args.mark
             passwords = self.daemon.search(keyword)
-            passwords = self.daemon.get(remember_password, [value.id for value in passwords])
+            passwords = self.daemon.get(master_password, [value.id for value in passwords])
             self.print_password(passwords, keyword, True)
             return
         if not args.operate:
-            if args.set_remember_password:
-                remember_password = getpass.getpass("Please input your remember password:")
-                retype_remember_password = getpass.getpass("Please retype your remember password:")
-                if remember_password != retype_remember_password:
+            if args.set_master_password:
+                master_password = getpass.getpass("Please input your master password:")
+                retype_master_password = getpass.getpass("Please retype your master password:")
+                if master_password != retype_master_password:
                     print("Password didn't match. Please try again.")
                     return
-                self.daemon.generate_remember_password_check(remember_password)
+                self.daemon.generate_master_password_check(master_password)
             return

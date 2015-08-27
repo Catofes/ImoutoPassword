@@ -28,10 +28,10 @@ class Config(Singleton):
 check_password = true
 #Salt.
 salt = ha92
-#Check remember password is right or not.
-rpw_check = 1
-#When add new password, don't ask for remember_password
-add_without_rpw = 0
+#Check master password is right or not.
+mpw_check = 1
+#When add new password, don't ask for master_password
+add_without_mpw = 0
 
 [daemon]
 #Whether to enable daemon mode.

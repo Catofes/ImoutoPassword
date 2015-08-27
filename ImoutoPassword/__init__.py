@@ -30,7 +30,7 @@ def start():
     add_parser.add_argument('-l', '--length',
                             help="The length of the password")
     add_parser.add_argument('-np', '--no-password', action="store_true",
-                            help="Don't ask remember password and no password generate.")
+                            help="Don't ask master password and no password generate.")
     del_parser = subparsers.add_parser('del', aliases=['d'],
                                        help='Delete a password')
     del_parser.add_argument('id', type=int,
@@ -45,9 +45,9 @@ def start():
                             help="The mark of the password")
     daemon_parser = subparsers.add_parser('daemon',
                                           help='Start the daemon')
-    parser.add_argument('--set-remember-password',
+    parser.add_argument('--set-master-password',
                         action='store_true',
-                        help='Set the Remember Password')
+                        help='Set the master Password')
     parser.add_argument('-v', '--version',
                         action='version',
                         version='ImoutoPassword 0.0.1')
