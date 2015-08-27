@@ -5,10 +5,12 @@ __author__ = 'herbertqiao'
 from ImoutoPassword.client import Client
 import argparse
 from ImoutoPassword.daemon import basic_daemon
+from ImoutoPassword.password_type import PasswordType
 import time
 
 
 def start():
+    password_type = PasswordType()
     parser = argparse.ArgumentParser(
     )
     subparsers = parser.add_subparsers(dest='operate')
@@ -23,7 +25,7 @@ def start():
     add_parser.add_argument('-r', '--release',
                             help="The version of the password")
     add_parser.add_argument('-t', '--type',
-                            choices=["def", "ncl", "wss", "abo", "no"],
+                            choices=password_type.change_map.keys(),
                             default="def",
                             help="The type of the password. 'def'=>Default. 'ncl'=>No Capital Letter."
                                  " 'wss'=>With Special Symbol. 'abo'=>AlphaBet Only. 'no'=>Number Only.")

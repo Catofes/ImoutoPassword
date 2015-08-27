@@ -35,20 +35,20 @@ def dict2obj(d):
 
 def to_json(obj):
     if isinstance(obj, Password):
-        return {'__jclass__': 'Password',
-                '__jvalue__': obj2dict(obj)}
+        return {'__json_class__': 'Password',
+                '__json_value__': obj2dict(obj)}
     raise TypeError(repr(obj) + ' is not JSON serializable')
 
 
 def from_json(obj):
-    if '__jclass__' in obj:
-        if obj['__jclass__'] == "Password":
-            return dict2obj(obj['__jvalue__'])
+    if '__json_class__' in obj:
+        if obj['__json_class__'] == "Password":
+            return dict2obj(obj['__json_value__'])
     return obj
 
 
 class Password():
-    def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", type=0, update_time=0,
+    def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", type="def", update_time=0,
                  need_update=False, available=True, special=False, sync_code=""):
         self.id = id
         self.user_id = user_id

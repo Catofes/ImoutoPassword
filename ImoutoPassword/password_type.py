@@ -9,8 +9,8 @@ class PasswordType(Singleton):
         if hasattr(self, '_init'):
             return
         self._init = True
-        self.change_map = [
-            {
+        self.change_map = {
+            "def": {
                 "name": "Default",
                 "start_with": "Ip",
                 "mapping": {
@@ -20,23 +20,23 @@ class PasswordType(Singleton):
                 },
                 "completion": ""
             },
-            {
+            "ncl": {
                 "name": "No Capital Letter",
                 "start_with": "",
                 "mapping": {
                 },
                 "completion": ""
             },
-            {
+            "wss": {
                 "name": "With Special Symbol",
-                "start_with": "Ip",
+                "start_with": "Ip.",
                 "mapping": {
                     "a": "!",
                     "c": "."
                 },
                 "completion": ""
             },
-            {
+            "abo": {
                 "name": "AlphaBet Only",
                 "start_with": "",
                 "mapping": {
@@ -53,7 +53,7 @@ class PasswordType(Singleton):
                 },
                 "completion": ""
             },
-            {
+            "no": {
                 "name": "Number Only",
                 "start_with": "",
                 "mapping": {
@@ -66,12 +66,11 @@ class PasswordType(Singleton):
                 },
                 "completion": "200253797761916324198679950268026"
             },
-
-        ]
+        }
         pass
 
     def change(self, result, password_type, length):
-        if password_type > len(self.change_map):
+        if password_type not in self.change_map.keys():
             raise PasswordError("Password type error.",
                                 "Password type error. Check your password record or check your password_type file.",
                                 None)

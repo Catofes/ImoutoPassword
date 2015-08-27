@@ -94,18 +94,7 @@ class Client:
             if args.length:
                 password.length = int(args.length)
             if args.type:
-                if args.type == "def":
-                    password.type = 0
-                elif args.type == "ncl":
-                    password.type = 1
-                elif args.type == "wss":
-                    password.type = 2
-                elif args.type == "abo":
-                    password.type = 3
-                elif args.type == "no":
-                    password.type = 4
-                else:
-                    password.type = 0
+                password.type = args.type
             if args.no_password or self.config.get("option", "add_without_mpw") == "1":
                 self.daemon.add(password)
                 return
