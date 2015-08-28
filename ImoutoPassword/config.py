@@ -27,7 +27,7 @@ class Config(Singleton):
 #Whether to check the main password right or not.
 check_password = true
 #Salt.
-salt = ha92
+salt = ImoutoPassword
 #Check master password is right or not.
 mpw_check = 1
 #When add new password, don't ask for master_password
