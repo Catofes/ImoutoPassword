@@ -71,8 +71,8 @@ class StaticDaemon(Singleton):
                 result[password] = key
 
         def compare(x, y):
-            x=x[0]
-            y=y[0]
+            x = x[0]
+            y = y[0]
             if x.mark > y.mark:
                 return 1
             if x.mark < y.mark:
@@ -96,7 +96,8 @@ class StaticDaemon(Singleton):
 
     def calculate_key(self, master_password, password):
         result = master_password + password.mark + str(password.version) + self.salt
-        result = hashlib.sha512(result.encode('utf-8')).hexdigest()
+        result = hashlib.sha512(
+            (hashlib.sha512(result.encode('utf-8')).hexdigest() + "ImoutoPassword").encode("utf-8")).hexdigest()
         result = self.password_type.change(result, password.type, password.length)
         return result
 
@@ -118,7 +119,7 @@ class StaticDaemon(Singleton):
         pid = 0
         password = Password()
         if self.check_master_password(master_password) != -1:
-            for item in self.database['passwords']:
+            for key,item in self.database['passwords'].items():
                 if item.special and item.mark == "MasterPasswordCheck":
                     pid = item.id
                     password.sync_code = "M"
