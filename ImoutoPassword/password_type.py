@@ -131,11 +131,12 @@ class PasswordType(Singleton):
         change_map = self.change_map[password_type]
         for k, v in change_map['mapping'].items():
             result = result.replace(k, v)
+        result += change_map['completion']
         for item in change_map['regexp']:
             result = result[0:length]
             if not re.search(item['reg'], result):
                 result = (item['add_at_head'] + result)[0:length]
                 result = result[0:length - len(item['add_at_end'])] + item['add_at_end']
-        result = change_map["start_with"] + result + change_map['completion']
+        result = change_map["start_with"] + result
         result = result[0:length]
         return result
