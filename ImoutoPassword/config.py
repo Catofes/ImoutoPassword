@@ -24,8 +24,6 @@ class Config(Singleton):
         self.config_file = os.path.join(os.path.expanduser('~'), '.ImoutoPassword/config')
         self.config_default_file = """
 [option]
-#Whether to check the main password right or not.
-check_password = true
 #Salt.
 salt = ImoutoPassword
 #Check master password is right or not.
