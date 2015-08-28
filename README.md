@@ -32,8 +32,8 @@ A LOT
 
 
     class Password():
-        def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", type="def", update_time=0,
-                     need_update=False, available=True, special=False, sync_code=""):
+        def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", type="def", structure_version=1,
+                     update_time=0, encrypt=False, need_update=False, available=True, special=False, sync_code=""):
             self.id = id
             self.user_id = user_id
             self.mark = mark
@@ -42,6 +42,8 @@ A LOT
             self.url = url
             self.intro = intro
             self.type = type
+            self.structure_version = structure_version
+            self.encrypt = encrypt
             self.update_time = time.time()
             if update_time != 0:
                 self.update_time = update_time
@@ -59,6 +61,8 @@ A LOT
 - intro: 用于储存密码的额外信息，例如网站名称，用户名等。仅用于搜索，可以为空，应为字符串。
 - type: 用于记录生成密码的类型，和password_type中的处理方法应该一一对应。
 - available: 用于删除记录。标记为False即表明记录无效。
+- encrypt: True表明该记录加密。现未实现
+- structure_version: 表明该记录结构版本，用于向后兼容。
 - special: 用于区分一些特殊记录。标记为True表示为特殊记录，详见下述说明。
 - need_update: 用于当用户更新记忆密码时提醒用户密码变动的字段。现并未实现。
 - user_id： 用于区分用户的唯一标识。应为不重复的整数。在同步时使用。

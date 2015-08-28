@@ -48,8 +48,9 @@ def from_json(obj):
 
 
 class Password():
-    def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", type="def", update_time=0,
-                 need_update=False, available=True, special=False, sync_code=""):
+    def __init__(self, id=0, user_id=0, mark="", version=0, length=16, url="", intro="", structure_version=1,
+                 type="def", update_time=0, encrypt=False, need_update=False, available=True, special=False,
+                 sync_code=""):
         self.id = id
         self.user_id = user_id
         self.mark = mark
@@ -58,6 +59,8 @@ class Password():
         self.url = url
         self.intro = intro
         self.type = type
+        self.structure_version = structure_version
+        self.encrypt = encrypt
         self.update_time = time.time()
         if update_time != 0:
             self.update_time = update_time
